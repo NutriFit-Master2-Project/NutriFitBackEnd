@@ -18,7 +18,7 @@ router.post("/sign-up", async (req, res) => {
 
     try {
         const userId = await createUser(req.body.name, req.body.email, req.body.password);
-        res.status(200).send(`Utilisateur ajouté avec l'ID : ${userId}`);
+        res.status(200).json({ message: `Utilisateur ajouté avec l'ID : ${userId}` });
     } catch (err) {
         res.status(500).json({ message: err });
     }
@@ -28,21 +28,21 @@ router.post("/sign-in", async (req, res) => {
     try {
         // Validate data before we create a user
         const { error } = loginValidation(req.body);
-        if (error) return res.status(400).send(error.details[0].message);
+        if (error) return res.status(400).json({ message: error.details[0].message });
 
         // Checking if email exist
         const user = await findUserByEmail(req.body.email);
-        if (!user) return res.status(400).send("Email doesn't exist");
+        if (!user) return res.status(400).json({ message: "Email doesn't exist" });
 
         // Check if password is correct
         const validPassword = await bcrypt.compare(req.body.password, user.hashedPassword);
-        if (!validPassword) return res.status(400).send("Invalid password");
+        if (!validPassword) return res.status(400).json({ message: "Invalid password" });
 
         // Create and assign a token
         const token = await generateAccessToken(user.id, user.name);
-        res.header("auth-token", token).send(token);
+        res.header("auth-token", token).json({ token });
     } catch (err) {
-        res.status(500).send({ message: err?.toString() });
+        res.status(500).json({ message: err?.toString() });
     }
 });
 
