@@ -1,5 +1,6 @@
 import { bool } from "joi";
-import { User } from "../models/user.model";
+import { User, UserCompleteData } from "../models/user.model";
+import { UserInfo } from "../models/userInfo.model";
 const firebaseDb = require("../config/firebaseConfig");
 
 /**
@@ -11,6 +12,7 @@ const firebaseDb = require("../config/firebaseConfig");
  * @param size - The updated size (height) of the user
  * @param genre - The updated gender of the user (true for male, false for female)
  * @param activites - The updated activity level of the user
+ * @param objective - The objectif of the user
  * @returns - True if the update was successful, otherwise false
  */
 const userInfoProfile = async (
@@ -19,7 +21,8 @@ const userInfoProfile = async (
     weight: number,
     size: number,
     genre: boolean,
-    activites: "SEDENTARY" | "ACTIVE" | "SPORTIVE"
+    activites: "SEDENTARY" | "ACTIVE" | "SPORTIVE",
+    objective: "WEIGHTGAIN" | "WEIGHTLOSS"
 ): Promise<boolean> => {
     try {
         const usersRef = firebaseDb.collection("users").doc(id);
@@ -29,7 +32,7 @@ const userInfoProfile = async (
             throw new Error("User not found");
         }
 
-        const docRef = await usersRef.update({ age, weight, size, genre, activites });
+        const docRef = await usersRef.update({ age, weight, size, genre, activites, objective });
         return true;
     } catch (error) {
         console.error("Error update info profile:", error);
@@ -59,7 +62,7 @@ const calculateCalories = async (
     activites: "SEDENTARY" | "ACTIVE" | "SPORTIVE",
     objective: "WEIGHTGAIN" | "WEIGHTLOSS"
 ): Promise<number> => {
-    let bmr = (weight * 10) + (size * 6.25) - (age * 5);
+    let bmr = weight * 10 + size * 6.25 - age * 5;
     if (genre) {
         bmr -= 161;
     } else {
@@ -80,23 +83,38 @@ const calculateCalories = async (
         default:
             throw new Error("Invalid activity level");
     }
-    
+
     switch (objective) {
         case "WEIGHTGAIN":
             bmr += 200;
             break;
         case "WEIGHTLOSS":
-            bmr -= 200
+            bmr -= 200;
             break;
         default:
-            throw new Error("Invalid objective level")
+            throw new Error("Invalid objective level");
     }
-    const calories = bmr
-    const docRef = await firebaseDb.collection("users").doc(id).update({ calories });
+    const calories = bmr;
+    await firebaseDb.collection("users").doc(id).update({ calories });
     return bmr;
+};
+
+const getUserInfoProfile = async (userId: string): Promise<UserCompleteData | null> => {
+    try {
+        const usersRef = await firebaseDb.collection("users").doc(userId).get();
+
+        if (!usersRef.exists) {
+            return null;
+        }
+
+        return usersRef.data();
+    } catch (error) {
+        throw new Error("Error getting user data");
+    }
 };
 
 module.exports = {
     userInfoProfile,
     calculateCalories,
+    getUserInfoProfile,
 };
