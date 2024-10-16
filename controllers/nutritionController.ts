@@ -32,7 +32,7 @@ router.post("/save-product/:userId", verify, async (req, res) => {
     try {
         await addProductToUser(userId, body);
 
-        res.status(404).json({ message: "Produit ajouté" });
+        res.status(200).json({ message: "Produit ajouté" });
     } catch (error) {
         res.status(500).json({ message: "Erreur serveur", error });
     }
