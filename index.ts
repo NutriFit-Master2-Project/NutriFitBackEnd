@@ -2,6 +2,7 @@ import express, { Express, Request, Response, Application } from "express";
 import dotenv from "dotenv";
 const authRouter = require("./controllers/authController");
 const userInfoRouter = require("./controllers/userInfoController");
+const nutritionRouter = require("./controllers/nutritionController");
 const cors = require("cors");
 
 dotenv.config();
@@ -17,7 +18,8 @@ app.get("/", (req: Request, res: Response) => {
 });
 
 app.use("/api/auth", authRouter);
-app.use("/api", userInfoRouter)
+app.use("/api", userInfoRouter);
+app.use("/api/nutrition", nutritionRouter);
 
 app.listen(port, () => {
     console.log(`Server is Fire at http://localhost:${port}`);
