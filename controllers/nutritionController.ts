@@ -4,6 +4,34 @@ const verify = require("../helper/verifyToken");
 
 const router = Router();
 
+/**
+ * @swagger
+ * /api/nutrition/get-nutritional-info/{productId}:
+ *   get:
+ *     summary: Obtenir les informations nutritionnelles d'un produit
+ *     tags: [Nutrition]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: productId
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: L'ID du produit
+ *     responses:
+ *       200:
+ *         description: Informations nutritionnelles du produit
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *       404:
+ *         description: Produit inconnu
+ *       500:
+ *         description: Erreur serveur
+ */
 router.get("/get-nutritional-info/:productId", verify, async (req, res) => {
     const { productId } = req.params;
 
@@ -20,6 +48,36 @@ router.get("/get-nutritional-info/:productId", verify, async (req, res) => {
     }
 });
 
+/**
+ * @swagger
+ * /api/nutrition/save-product/{userId}:
+ *   post:
+ *     summary: Enregistrer un produit pour un utilisateur
+ *     tags: [Nutrition]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: userId
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: L'ID de l'utilisateur
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *     responses:
+ *       200:
+ *         description: Produit ajouté avec succès
+ *       400:
+ *         description: Le body de la requête est requis
+ *       500:
+ *         description: Erreur serveur
+ */
 router.post("/save-product/:userId", verify, async (req, res) => {
     const { userId } = req.params;
     const body = req.body;
@@ -38,6 +96,92 @@ router.post("/save-product/:userId", verify, async (req, res) => {
     }
 });
 
+/**
+ * @swagger
+ * /api/nutrition/product-list/{userId}:
+ *   get:
+ *     summary: Récupère la liste des produits associés à un utilisateur
+ *     tags: [Nutrition]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: userId
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: ID de l'utilisateur pour lequel récupérer la liste des produits
+ *     responses:
+ *       200:
+ *         description: Liste des produits de l'utilisateur
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 type: object
+ *                 properties:
+ *                   product_name:
+ *                     type: string
+ *                     description: Nom du produit
+ *                   ingredients_text:
+ *                     type: string
+ *                     description: Description des ingrédients
+ *                   nutriments:
+ *                     type: object
+ *                     properties:
+ *                       energy:
+ *                         type: number
+ *                         description: Énergie en kj
+ *                       energy-kcal:
+ *                         type: number
+ *                         description: Énergie en kcal
+ *                       fat:
+ *                         type: number
+ *                         description: Quantité de graisses en g
+ *                       saturated-fat:
+ *                         type: number
+ *                         description: Quantité de graisses saturées en g
+ *                       sugars:
+ *                         type: number
+ *                         description: Quantité de sucres en g
+ *                       salt:
+ *                         type: number
+ *                         description: Quantité de sel en g
+ *                       proteins:
+ *                         type: number
+ *                         description: Quantité de protéines en g
+ *                   ingredients_analysis_tags:
+ *                     type: array
+ *                     items:
+ *                       type: string
+ *                     description: Tags d'analyse des ingrédients
+ *                   nutriscore_grade:
+ *                     type: string
+ *                     description: Nutri-score du produit (a, b, c, d, e)
+ *                   brands:
+ *                     type: string
+ *                     description: Marque du produit
+ *                   categories:
+ *                     type: string
+ *                     description: Catégories du produit
+ *                   quantity:
+ *                     type: string
+ *                     description: Quantité du produit
+ *                   labels:
+ *                     type: string
+ *                     description: Labels associés au produit
+ *                   allergens:
+ *                     type: string
+ *                     description: Allergènes présents dans le produit
+ *                   image_url:
+ *                     type: string
+ *                     description: URL de l'image du produit
+ *       404:
+ *         description: Aucun produit trouvé pour l'utilisateur
+ *       500:
+ *         description: Erreur serveur
+ */
 router.get("/product-list/:userId", verify, async (req, res) => {
     const { userId } = req.params;
 

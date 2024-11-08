@@ -7,6 +7,42 @@ const verify = require("../helper/verifyToken");
 
 const router = Router();
 
+/**
+ * @swagger
+ * /api/auth/sign-up:
+ *   post:
+ *     summary: Inscrire un nouvel utilisateur
+ *     tags: [Auth]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               name:
+ *                 type: string
+ *               email:
+ *                 type: string
+ *                 format: email
+ *               password:
+ *                 type: string
+ *                 format: password
+ *     responses:
+ *       200:
+ *         description: Utilisateur créé avec succès
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *       400:
+ *         description: Validation échouée ou email déjà utilisé
+ *       500:
+ *         description: Erreur serveur
+ */
 router.post("/sign-up", async (req, res) => {
     // Validate data before we create a user
     const { error } = registerValidation(req.body);
@@ -24,6 +60,40 @@ router.post("/sign-up", async (req, res) => {
     }
 });
 
+/**
+ * @swagger
+ * /api/auth/sign-in:
+ *   post:
+ *     summary: Connecter un utilisateur
+ *     tags: [Auth]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               email:
+ *                 type: string
+ *                 format: email
+ *               password:
+ *                 type: string
+ *                 format: password
+ *     responses:
+ *       200:
+ *         description: Authentification réussie
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 token:
+ *                   type: string
+ *       400:
+ *         description: Email ou mot de passe incorrect
+ *       500:
+ *         description: Erreur serveur
+ */
 router.post("/sign-in", async (req, res) => {
     try {
         // Validate data before we create a user
@@ -46,6 +116,34 @@ router.post("/sign-in", async (req, res) => {
     }
 });
 
+/**
+ * @swagger
+ * /api/auth/get-all-users:
+ *   get:
+ *     summary: Récupérer tous les utilisateurs
+ *     tags: [Auth]
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: Liste de tous les utilisateurs
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 type: object
+ *                 properties:
+ *                   id:
+ *                     type: string
+ *                   name:
+ *                     type: string
+ *                   email:
+ *                     type: string
+ *                     format: email
+ *       500:
+ *         description: Erreur serveur
+ */
 router.get("/get-all-users", verify, async (_req, res) => {
     try {
         const users = await fetchAllUsers();
