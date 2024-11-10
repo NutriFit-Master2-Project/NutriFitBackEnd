@@ -1,4 +1,5 @@
 export interface ProductData {
+    _id?: string;
     product_name: string;
     ingredients_text: string;
     nutriments: {

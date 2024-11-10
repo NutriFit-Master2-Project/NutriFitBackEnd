@@ -61,9 +61,9 @@ const getProductListForUser = async (userId: string): Promise<ProductData[] | nu
 
         const products: ProductData[] = [];
 
-        productsSnapshot.forEach((doc: { data: () => ProductData }) => {
+        productsSnapshot.forEach((doc: { data: () => ProductData; id: string }) => {
             const productData = doc.data() as ProductData;
-            products.push(productData);
+            products.push({ ...productData, _id: doc.id });
         });
 
         return products;
@@ -73,8 +73,19 @@ const getProductListForUser = async (userId: string): Promise<ProductData[] | nu
     }
 };
 
+const deleteProductFromUser = async (userId: string, productId: string): Promise<void> => {
+    try {
+        const userRef = firebaseDb.collection("users").doc(userId);
+        const productRef = userRef.collection("nutritionProducts").doc(productId);
+        await productRef.delete();
+    } catch (error) {
+        throw new Error("Erreur lors de la suppression du produit");
+    }
+};
+
 module.exports = {
     fetchProductData,
     addProductToUser,
     getProductListForUser,
+    deleteProductFromUser,
 };

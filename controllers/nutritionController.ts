@@ -1,5 +1,10 @@
 import { Router } from "express";
-const { fetchProductData, addProductToUser, getProductListForUser } = require("../services/nutritionService");
+const {
+    fetchProductData,
+    addProductToUser,
+    getProductListForUser,
+    deleteProductFromUser,
+} = require("../services/nutritionService");
 const verify = require("../helper/verifyToken");
 
 const router = Router();
@@ -27,6 +32,62 @@ const router = Router();
  *             schema:
  *               type: object
  *               properties:
+ *                 product_name:
+ *                   type: string
+ *                   description: Nom du produit
+ *                 ingredients_text:
+ *                   type: string
+ *                   description: Liste des ingrédients du produit
+ *                 nutriments:
+ *                   type: object
+ *                   properties:
+ *                     energy:
+ *                       type: number
+ *                       description: Énergie en kj
+ *                     energy-kcal:
+ *                       type: number
+ *                       description: Énergie en kcal
+ *                     fat:
+ *                       type: number
+ *                       description: Quantité de graisses en g
+ *                     saturated-fat:
+ *                       type: number
+ *                       description: Quantité de graisses saturées en g
+ *                     sugars:
+ *                       type: number
+ *                       description: Quantité de sucres en g
+ *                     salt:
+ *                       type: number
+ *                       description: Quantité de sel en g
+ *                     proteins:
+ *                       type: number
+ *                       description: Quantité de protéines en g
+ *                 ingredients_analysis_tags:
+ *                   type: array
+ *                   items:
+ *                     type: string
+ *                   description: Tags d'analyse des ingrédients (ex. végétarien, végan)
+ *                 nutriscore_grade:
+ *                   type: string
+ *                   description: Nutri-score du produit (a, b, c, d, e)
+ *                 brands:
+ *                   type: string
+ *                   description: Marque du produit
+ *                 categories:
+ *                   type: string
+ *                   description: Catégories du produit
+ *                 quantity:
+ *                   type: string
+ *                   description: Quantité du produit
+ *                 labels:
+ *                   type: string
+ *                   description: Labels associés au produit (ex. bio)
+ *                 allergens:
+ *                   type: string
+ *                   description: Allergènes présents dans le produit
+ *                 image_url:
+ *                   type: string
+ *                   description: URL de l'image du produit
  *       404:
  *         description: Produit inconnu
  *       500:
@@ -70,6 +131,62 @@ router.get("/get-nutritional-info/:productId", verify, async (req, res) => {
  *           schema:
  *             type: object
  *             properties:
+ *               product_name:
+ *                 type: string
+ *                 description: Nom du produit
+ *               ingredients_text:
+ *                 type: string
+ *                 description: Liste des ingrédients du produit
+ *               nutriments:
+ *                 type: object
+ *                 properties:
+ *                   energy:
+ *                     type: number
+ *                     description: Énergie en kj
+ *                   energy-kcal:
+ *                     type: number
+ *                     description: Énergie en kcal
+ *                   fat:
+ *                     type: number
+ *                     description: Quantité de graisses en g
+ *                   saturated-fat:
+ *                     type: number
+ *                     description: Quantité de graisses saturées en g
+ *                   sugars:
+ *                     type: number
+ *                     description: Quantité de sucres en g
+ *                   salt:
+ *                     type: number
+ *                     description: Quantité de sel en g
+ *                   proteins:
+ *                     type: number
+ *                     description: Quantité de protéines en g
+ *               ingredients_analysis_tags:
+ *                 type: array
+ *                 items:
+ *                   type: string
+ *                 description: Tags d'analyse des ingrédients (ex. végétarien, végan)
+ *               nutriscore_grade:
+ *                 type: string
+ *                 description: Nutri-score du produit (a, b, c, d, e)
+ *               brands:
+ *                 type: string
+ *                 description: Marque du produit
+ *               categories:
+ *                 type: string
+ *                 description: Catégories du produit
+ *               quantity:
+ *                 type: string
+ *                 description: Quantité du produit
+ *               labels:
+ *                 type: string
+ *                 description: Labels associés au produit (ex. bio)
+ *               allergens:
+ *                 type: string
+ *                 description: Allergènes présents dans le produit
+ *               image_url:
+ *                 type: string
+ *                 description: URL de l'image du produit
  *     responses:
  *       200:
  *         description: Produit ajouté avec succès
@@ -193,6 +310,46 @@ router.get("/product-list/:userId", verify, async (req, res) => {
         } else {
             res.status(404).json({ message: "Aucun produit trouvé pour l'utilisateur" });
         }
+    } catch (error) {
+        res.status(500).json({ message: "Erreur serveur", error });
+    }
+});
+
+/**
+ * @swagger
+ * /api/nutrition/product/{userId}/{productId}:
+ *   delete:
+ *     summary: Supprime un produit spécifique pour un utilisateur
+ *     tags: [Nutrition]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: userId
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: ID de l'utilisateur
+ *       - in: path
+ *         name: productId
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: ID du produit à supprimer
+ *     responses:
+ *       200:
+ *         description: Produit supprimé avec succès
+ *       404:
+ *         description: Produit non trouvé
+ *       500:
+ *         description: Erreur serveur
+ */
+router.delete("/product/:userId/:productId", verify, async (req, res) => {
+    const { userId, productId } = req.params;
+
+    try {
+        await deleteProductFromUser(userId, productId);
+        res.status(200).json({ message: "Produit supprimé avec succès" });
     } catch (error) {
         res.status(500).json({ message: "Erreur serveur", error });
     }
