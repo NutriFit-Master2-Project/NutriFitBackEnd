@@ -115,7 +115,10 @@ const userDailyEntryService = {
         const mealsSnapshot = await entryRef.collection("meals").get();
         const meals: Meal[] = [];
         mealsSnapshot.forEach((mealDoc: any) => {
-            meals.push(mealDoc.data() as Meal);
+            meals.push({
+                id: mealDoc.id,
+                ...(mealDoc.data() as Meal),
+            });
         });
 
         return {
