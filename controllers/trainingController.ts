@@ -34,6 +34,7 @@
  *               - series
  *               - repetitions
  *               - calories
+ *               - image
  *             properties:
  *               name:
  *                 type: string
@@ -47,6 +48,8 @@
  *                 type: number
  *               calories:
  *                 type: number
+ *               image:
+ *                 type: string
  */
 
 /**
@@ -84,6 +87,7 @@
  *                     - series
  *                     - repetitions
  *                     - calories
+ *                     - image
  *                   properties:
  *                     name:
  *                       type: string
@@ -97,6 +101,8 @@
  *                       type: number
  *                     calories:
  *                       type: number
+ *                     image:
+ *                       type: string
  *     responses:
  *       201:
  *         description: Training added successfully
@@ -198,10 +204,11 @@ router.post("/trainings", verify, async (req: Request, res: Response) => {
             !exercise.muscles ||
             !exercise.series ||
             !exercise.repetitions ||
-            !exercise.calories
+            !exercise.calories ||
+            !exercise.image
         ) {
             return res.status(400).json({
-                error: "Chaque exercice doit inclure name, description, muscles, series, repetitions, et calories.",
+                error: "Chaque exercice doit inclure name, description, muscles, series, repetitions, calories, et image.",
             });
         }
     }

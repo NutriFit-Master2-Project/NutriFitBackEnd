@@ -6,9 +6,11 @@ const addTraining = async (training: Training): Promise<{ id: string; training: 
     const trainingDoc = await trainingRef.add(training);
     return { id: trainingDoc.id, training };
 };
+
 const calculateTotalCalories = (training: Training): number => {
     return training.exercises.reduce((total, exercise) => total + exercise.calories, 0);
 };
+
 const getTrainings = async (): Promise<(Training & { id: string; totalCalories: number })[]> => {
     const trainingsSnapshot = await firebaseDb.collection("trainings").get();
     const trainings: (Training & { id: string; totalCalories: number })[] = [];

@@ -5,6 +5,7 @@ export interface Exercise {
     series: number;
     repetitions: number;
     calories: number;
+    image: string;
 }
 
 export interface Training {
