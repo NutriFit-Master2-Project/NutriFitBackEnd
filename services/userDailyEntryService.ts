@@ -229,6 +229,30 @@ const userDailyEntryService = {
         await mealRef.delete();
         return { message: "Meal deleted successfully" };
     },
+
+    /**
+     * Adds a specified amount of burned calories to the current daily entry.
+     *
+     * @param {string} userId - The user's unique identifier.
+     * @param {string} date - The date of the daily entry in `YYYY-MM-DD` format.
+     * @param {number} caloriesBurnToAdd - The number of burned calories to add.
+     * @returns {Promise<{message: string}>} - A success message.
+     */
+    async addCaloriesBurn(userId: string, date: string, caloriesBurnToAdd: number): Promise<{ message: string }> {
+        const entryRef = db.collection("users").doc(userId).collection("dailyEntries").doc(date);
+        const entryDoc = await entryRef.get();
+
+        if (!entryDoc.exists) {
+            await this.createDailyEntry(userId, date, 0, caloriesBurnToAdd, 0);
+            return { message: "Daily entry created and caloriesBurn added successfully" };
+        }
+
+        const currentData = entryDoc.data() as DailyEntry;
+        const newCaloriesBurn = currentData.caloriesBurn + caloriesBurnToAdd;
+
+        await entryRef.update({ caloriesBurn: newCaloriesBurn });
+        return { message: "CaloriesBurn added successfully" };
+    },
 };
 
 module.exports = { userDailyEntryService };

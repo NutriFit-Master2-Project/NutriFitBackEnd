@@ -443,4 +443,62 @@ router.delete("/:userId/entries/:date/meals/:mealId", verify, async (req: Reques
     }
 });
 
+/**
+ * @swagger
+ * /api/daily_entries/:userId/entries/:date/add-calories-burn:
+ *   post:
+ *     summary: Ajouter des calories brûlées à l'entrée quotidienne
+ *     tags: [Daily Entry]
+ *     parameters:
+ *       - in: path
+ *         name: userId
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: L'ID de l'utilisateur
+ *       - in: path
+ *         name: date
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: La date de l'entrée au format YYYY-MM-DD
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               caloriesBurnToAdd:
+ *                 type: number
+ *                 description: Le nombre de calories brûlées à ajouter
+ *             required:
+ *               - caloriesBurnToAdd
+ *     responses:
+ *       200:
+ *         description: Calories brûlées ajoutées avec succès
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *       400:
+ *         description: Erreur dans l'ajout des calories brûlées
+ *       500:
+ *         description: Erreur interne du serveur
+ */
+router.post("/:userId/entries/:date/add-calories-burn", verify, async (req: Request, res: Response) => {
+    const { userId, date } = req.params;
+    const { caloriesBurnToAdd } = req.body;
+
+    try {
+        const result = await userDailyEntryService.addCaloriesBurn(userId, date, caloriesBurnToAdd);
+        res.status(200).json(result);
+    } catch (error: any) {
+        res.status(400).json({ error: error.message });
+    }
+});
+
 module.exports = router;
