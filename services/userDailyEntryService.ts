@@ -2,6 +2,7 @@ const db = require("../config/firebaseConfig");
 
 interface DailyEntry {
     calories: number;
+    caloriesBurn: number;
     steps: number;
     createdAt?: Date;
     date?: string;
@@ -32,12 +33,14 @@ const userDailyEntryService = {
         userId: string,
         date: string,
         calories: number = 0,
+        caloriesBurn: number = 0,
         steps: number = 0
     ): Promise<{ message: string }> {
         const entryRef = db.collection("users").doc(userId).collection("dailyEntries").doc(date);
 
         const entry: DailyEntry = {
             calories,
+            caloriesBurn,
             steps,
             createdAt: new Date(),
         };
@@ -106,6 +109,7 @@ const userDailyEntryService = {
 
             return {
                 calories: 0,
+                caloriesBurn: 0,
                 steps: 0,
                 meals: [],
                 date,

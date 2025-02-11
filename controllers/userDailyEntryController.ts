@@ -26,12 +26,16 @@ const router = express.Router();
  *             properties:
  *               calories:
  *                 type: number
- *                 description: Le nombre de calories consommées
+ *                 description: Le nombre de calories consommées avec l'alimentation
+ *               caloriesBurn:
+ *                 type: number
+ *                 description: Le nombre de calories brûlées
  *               steps:
  *                 type: number
  *                 description: Le nombre de pas effectués
  *             required:
  *               - calories
+ *               - caloriesBurn
  *               - steps
  *     responses:
  *       201:
@@ -50,11 +54,11 @@ const router = express.Router();
  */
 router.post("/:userId/entries", verify, async (req: Request, res: Response) => {
     const { userId } = req.params;
-    const { calories, steps } = req.body;
+    const { calories, caloriesBurn, steps } = req.body;
     const date = new Date().toISOString().split("T")[0];
 
     try {
-        const result = await userDailyEntryService.createDailyEntry(userId, date, calories, steps);
+        const result = await userDailyEntryService.createDailyEntry(userId, date, calories, caloriesBurn, steps);
         res.status(201).json(result);
     } catch (error: any) {
         res.status(400).json({ error: error.message });
@@ -90,6 +94,9 @@ router.post("/:userId/entries", verify, async (req: Request, res: Response) => {
  *                   calories:
  *                     type: number
  *                     description: Le nombre de calories consommées
+ *                   caloriesBurn:
+ *                     type: number
+ *                     description: Le nombre de calories brûlées
  *                   steps:
  *                     type: number
  *                     description: Le nombre de pas effectués
@@ -137,6 +144,9 @@ router.get("/:userId/entries", verify, async (req: Request, res: Response) => {
  *                 calories:
  *                   type: number
  *                   description: Le nombre de calories consommées
+ *                 caloriesBurn:
+ *                   type: number
+ *                   description: Le nombre de calories brûlées
  *                 steps:
  *                   type: number
  *                   description: Le nombre de pas effectués
@@ -183,11 +193,15 @@ router.get("/:userId/entries/:date", verify, async (req: Request, res: Response)
  *               calories:
  *                 type: number
  *                 description: Le nombre de calories consommées
+ *               caloriesBurn:
+ *                 type: number
+ *                 description: Le nombre de calories brûlées
  *               steps:
  *                 type: number
  *                 description: Le nombre de pas effectués
  *             required:
  *               - calories
+ *               - caloriesBurn
  *               - steps
  *     responses:
  *       200:
@@ -287,7 +301,7 @@ router.delete("/:userId/entries/:date", verify, async (req: Request, res: Respon
  *                 description: La quantité de cet aliment consommée
  *               image_url:
  *                 type: string
- *                 description: Image of the food url
+ *                 description: URL de l'image de l'aliment
  *             required:
  *               - name
  *               - calories
