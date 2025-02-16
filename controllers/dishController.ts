@@ -5,23 +5,26 @@ const verify = require("../helper/verifyToken");
 
 const router = Router();
 
-router.post('/recommend-dish', verify,async (req, res) => {
-    const { fridgeItems } = req.body.message;
+router.post('/recommend-dish', verify, async (req, res) => {
+    const { aliments } = req.body;
+
     try {
         const apiKey = process.env.API_KEY_MISTRAL_AI;
         const client = new Mistral({ apiKey: apiKey });
 
-        const AgentResponse = await client.agents.complete({
-            max_tokens: 10000,
-            agent_id: "ag:3996db2b:20240805:french-agent:a8997aab",
-            messages: [{ role: 'user', content: fridgeItems }],
-            response_format: { "type": "json_object"},
-        });
-        const dishInfo = mapToDishinfo(AgentResponse);
-
-        res.json(dishInfo);
+        const chatResponse = await client.agents.complete({
+            agentId: "ag:bba70181:20250216:nutrifit-dish:86f253d2",
+            messages: [{ role: 'user', content: "aliments : "+ aliments }],
+            max_tokens: 5000,
+            response_format: { type: "json_object" },
+          });
+        
+        const dishInfo = await mapToDishinfo(chatResponse.choices[0].message.content);
+        
+        res.status(200).json(dishInfo);
     } catch (error) {
-        console.error('Erreur lors de l\'appel à l\'API Mistral AI:', error);
         res.status(500).json({ error: 'Erreur interne du serveur' });
     }
 });
+
+module.exports = router;

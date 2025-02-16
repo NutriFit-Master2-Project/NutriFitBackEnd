@@ -1,20 +1,24 @@
 import { DishInfo } from "../models/dish.model";
-const firebaseDb = require("../config/firebaseConfig");
 
-const mapToDishinfo = async (response: any) =>{
-    const content = response.choices[0].message.content;
+const mapToDishinfo = async (responseAI: string): Promise<DishInfo> => {
+    try {
+        const responseObject = JSON.parse(responseAI);
 
-    const DishInfo: DishInfo = {
-        id: content.id || '',
-        Name: content.Name || '',
-        Description: content.Description || '',
-        Food: content.Food || [],
-        ExtraFood: content.ExtraFood || [],
-        PreparationStep: content.PreparationStep || [],
-        CookTime: content.CookTime || ''
+        const DishInfo: DishInfo = {
+            id: responseObject.id ?? "",
+            Name: responseObject.Name,
+            Description: responseObject.Description,
+            Food: responseObject.Food,
+            ExtraFood: responseObject.ExtraFood,
+            PreparationStep: responseObject.PreparationStep,
+            CookTime: responseObject.CookTime
+        };
+
+        return DishInfo;
+    } catch (error) {
+        throw new Error('La réponse n\'est pas un JSON valide');
     }
-    return DishInfo;
-}
+};
 
 module.exports = {
     mapToDishinfo

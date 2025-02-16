@@ -1,5 +1,5 @@
 export interface DishInfo {
-    id: string;
+    id?: string;
     Name: string;
     Description: string;
     Food: string[];
