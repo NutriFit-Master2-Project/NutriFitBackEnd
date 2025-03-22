@@ -20,6 +20,24 @@ const mapToDishinfo = async (responseAI: string): Promise<DishInfo> => {
     }
 };
 
+const mapToCaloriesInfo = async (responseAI: string): Promise<Meal> => {
+    try {
+        const responseObject = JSON.parse(responseAI);
+
+        const Meal: Meal = {
+            name: responseObject.Food,
+            quantity: responseObject.Quantity,
+            calories: responseObject.Calories,
+            createdAt: new Date()
+        };
+
+        return Meal;
+    } catch (error) {
+        throw new Error('La réponse n\'est pas un JSON valide');
+    }
+};
+
 module.exports = {
-    mapToDishinfo
+    mapToDishinfo,
+    mapToCaloriesInfo
 };
