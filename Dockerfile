@@ -23,6 +23,6 @@ COPY --from=builder /usr/src/app/dist ./dist
 COPY --from=builder /usr/src/app/package*.json ./
 COPY --from=builder /usr/src/app/node_modules ./node_modules
 
-EXPOSE 8080
+EXPOSE 8000
 
 CMD ["node", "dist/index.js"]
