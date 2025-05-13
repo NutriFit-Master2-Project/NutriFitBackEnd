@@ -52,4 +52,5 @@ jobs:
                     --set-env-vars "PRIVATE_KEY=${{ secrets.PRIVATE_KEY }}" \
                     --set-env-vars "CLIENT_EMAIL=${{ secrets.CLIENT_EMAIL }}" \
                     --set-env-vars "CLIENT_ID=${{ secrets.CLIENT_ID }}" \
-                    --set-env-vars "CLIENT_X509_CERT_URL=${{ secrets.CLIENT_X509_CERT_URL }}"
+                    --set-env-vars "CLIENT_X509_CERT_URL=${{ secrets.CLIENT_X509_CERT_URL }}" \
+                    --set-env-vars "API_KEY_MISTRAL_AI=${{ secrets.API_KEY_MISTRAL_AI }}"
