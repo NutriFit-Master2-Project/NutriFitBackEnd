@@ -6,7 +6,7 @@ on:
     workflow_dispatch:
 
 env:
-    PROJECT_ID: nutrifit-453715
+    PROJECT_ID: nutrifit-459709
     SERVICE_NAME: nutri-fit-back
     REGION: europe-west1
 
