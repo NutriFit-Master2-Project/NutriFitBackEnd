@@ -47,6 +47,6 @@ app.use("/api/daily_entries", userDailyEntryRouter);
 app.use("/api", trainingRouter);
 app.use("/api", dishRouter);
 
-app.listen(port, () => {
-    console.log(`Server is Fire at http://localhost:${port}`);
+app.listen(Number(port), "0.0.0.0", () => {
+    console.log(`Server is running on port ${port}`);
 });

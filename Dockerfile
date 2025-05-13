@@ -23,6 +23,8 @@ COPY --from=builder /usr/src/app/dist ./dist
 COPY --from=builder /usr/src/app/package*.json ./
 COPY --from=builder /usr/src/app/node_modules ./node_modules
 
-EXPOSE 8000
+ENV PORT=8000
+ENV HOST=0.0.0.0
+EXPOSE ${PORT}
 
 CMD ["node", "dist/index.js"]

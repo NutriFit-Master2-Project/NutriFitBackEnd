@@ -45,7 +45,6 @@ jobs:
                     --region ${{ env.REGION }} \
                     --platform managed \
                     --allow-unauthenticated \
-                    --port 8000 \
                     --set-env-vars "TOKEN_SECRET=${{ secrets.TOKEN_SECRET }}" \
                     --set-env-vars "DB_URL=${{ secrets.DB_URL }}" \
                     --set-env-vars "PROJECT_ID=${{ secrets.PROJECT_ID }}" \
